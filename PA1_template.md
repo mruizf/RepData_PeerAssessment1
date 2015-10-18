@@ -13,7 +13,8 @@ Assigment 1
 
 With those instruction load the data and convert the column of Dates from levels to Date objects.
 
-```{r loadingData, echo=TRUE}
+
+```r
 setwd("C:\\Users\\MR\\Documents\\Reproducible")
 data<- read.csv("activity.csv")
 ```
@@ -23,7 +24,8 @@ data<- read.csv("activity.csv")
 1.Calculate the total number of steps taken per day.
 
 
-```{r sum, echo=TRUE}
+
+```r
 dataNoNA<-data[!is.na(data$steps),]
 dataNoNA$date<-as.Date(dataNoNA$date,format="%Y-%m-%d")
 datatapply<-tapply(dataNoNA$steps,dataNoNA$date,sum)
@@ -31,52 +33,62 @@ datatapply<-tapply(dataNoNA$steps,dataNoNA$date,sum)
 
 2.If you do not understand the difference between a histogram and a barplot, research the difference between them. Make a histogram of the total number of steps taken each day
 
-```{r histogram, echo=TRUE}
+
+```r
 hist(datatapply,main="Number steps per day",xlab="Number Steps", col="yellow",breaks=20)
 ```
 
+![plot of chunk histogram](figure/histogram-1.png) 
+
 3.Calculate and report the mean and median of the total number of steps taken per day
 
-```{r meandMedian, echo=TRUE}
+
+```r
 meanvalue <- mean(tapply(dataNoNA$steps,dataNoNA$date,sum))
 medianvalue <- median(tapply(dataNoNA$steps,dataNoNA$date,sum))
 ```
 
-The mean is `r meanvalue` and the media is `r medianvalue`.
+The mean is 1.0766189 &times; 10<sup>4</sup> and the media is 10765.
 
 ##What is the average daily activity pattern?
 
 1.Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
-```{r meanbyInterval, echo=TRUE}
+
+```r
 datatapply <- tapply(dataNoNA$steps, dataNoNA$interval, mean)
 plot(names(datatapply),datatapply,type = "l",main = "Average number of steps by Interval", xlab="Time interval",ylab="Average of steps")
 ```
 
+![plot of chunk meanbyInterval](figure/meanbyInterval-1.png) 
+
 2.Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r maximus, echo=TRUE}
+
+```r
 posmax <- which.max(dataNoNA$steps)
 maxvalue <- max(dataNoNA$steps)
 ```
 
-The max number step in one interval is `r maxvalue`. The position is interval `r posmax`.
+The max number step in one interval is 806. The position is interval 14476.
 
 ##Imputing missing values
 
 1.Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
 
-```{r isna, echo=TRUE}
+
+```r
 numberNa <-sum(is.na(data$steps))
 ```
 
-There are `r numberNa` rows with NA value.
+There are 2304 rows with NA value.
 
 2.Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
 
 For this part I will use the average of the complete date to fill the NA data.
 
-```{r filling, echo=TRUE}
+
+```r
 datatapply <- tapply(dataNoNA$steps, dataNoNA$date, mean)
 datatapply <- as.data.frame(as.table(datatapply))
 names(datatapply) <- c("date", "avg_steps")
